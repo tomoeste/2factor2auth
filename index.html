@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="2fast.webp">
+    <title>2Factor2Authentication</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <header>
+      <img src="2fast.webp" height="24" alt="2fast" />
+      <span class="title">2Factor2Authentication</span>
+    </header>
+
+    <main>
+      <h1 id="heading">Welcome back!</h1>
+      <p id="help-text" class="help-text">Beat your fastest login time to proceed.</p>
+      
+      <form id="login-form">
+        <p id="message" class="message"></p>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required />
+        
+        <label for="password">Password</label>
+        <span class="password-wrapper">
+          <input type="password" name="password-ghost" id="password-ghost" readonly class="password-ghost" value="" tabindex="-1" />
+          <input type="password" name="password" id="password" autocomplete="off" required class="password" />
+        </span>
+        
+
+        <span class="checkbox">
+          <input type="checkbox" name="remember" id="remember" checked />
+          <label class="checkbox-label" for="remember">Remember me?</label>
+        </span>
+
+        <button id="login-btn" type="submit" form="login-form">Login</button>
+      </form>
+
+      <article class="congrats-card hidden" id="congrats-card">
+        <p id="congrats" class="congrats-message"></p>
+        <button id="logout">Logout</button>
+      </article>
+    </main>
+
+    <footer>
+      <p>All data is stored locally. For demonstration purposes only.</p>
+    </footer>
+    <script src="index.js"></script>
+  </body>
+</html>
