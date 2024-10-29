@@ -146,7 +146,12 @@ form.addEventListener('submit', (event) => {
     const existingUser = JSON.parse(hasItem);
     if (existingUser.password !== password) {
       message.textContent = "Email and password don't go 2gether";
-      return
+      return;
+    }
+    if (time < password.length * 100) {
+      reset();
+      message.textContent = "2fast! Take your time, Speed Racer.";
+      return;
     }
     localStorage.setItem(email, JSON.stringify({
       password,
