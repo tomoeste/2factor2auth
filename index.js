@@ -1,7 +1,8 @@
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 const PASSWORD_CHAR = '*';
-const PASSWORD_BACK = '-'
+const PASSWORD_BACK = '-';
 
 const form = document.getElementById('login-form');
 const email = document.getElementById('email');
@@ -15,18 +16,19 @@ const helpText = document.getElementById('help-text');
 const congratsCard = document.getElementById('congrats-card');
 const congratsMessage = document.getElementById('congrats');
 const logout = document.getElementById('logout');
-
-email.focus();
+const clearData = document.getElementById('clear-data');
 
 let startTime;
 let interval;
 let inProgress = false;
 let passwordTimes = [];
 
+reset();
+
 function toggleView() {
   if (form.classList.contains('hidden')) {
-    heading.textContent = "Welcome back!";
-    helpText.textContent = "Beat your fastest login time to proceed.";
+    heading.textContent = 'Welcome back!';
+    helpText.textContent = 'Beat your fastest login time to proceed.';
   }
   form.classList.toggle('hidden');
   congratsCard.classList.toggle('hidden');
@@ -37,8 +39,8 @@ function reset() {
   startTime = null;
   interval = null;
   inProgress = false;
-  heading.textContent = "Welcome back!";
-  message.textContent = "";
+  heading.textContent = 'Welcome back!';
+  message.textContent = '';
   email.disabled = false;
   remember.disabled = false;
   passwordGhost.value = '';
@@ -46,9 +48,11 @@ function reset() {
   form.reset();
   email.focus();
   requestAnimationFrame(() => {
-    submit.textContent = "Login";
+    if (localStorage.getItem('lastLogin'))
+      email.value = localStorage.getItem('lastLogin');
+    submit.textContent = 'Login';
     submit.style.fontSize = '1em';
-});
+  });
 }
 
 function startTimer() {
@@ -62,14 +66,17 @@ function startTimer() {
     message.textContent = 'Time limit: 10 seconds';
     if (hasItem) {
       const existingUser = JSON.parse(hasItem);
-      message.textContent = `Personal best: ${(existingUser.time / 1000).toFixed(3)} seconds`;
+      message.textContent = `Personal best: ${(
+        existingUser.time / 1000
+      ).toFixed(3)} seconds`;
       existingUser.passwordTimes.forEach((t) => {
         setTimeout(() => {
           if (inProgress) {
             if (t.key === '*') passwordGhost.value += t.key;
-            if (t.key === '-') passwordGhost.value = passwordGhost.value.slice(0, -1);
+            if (t.key === '-')
+              passwordGhost.value = passwordGhost.value.slice(0, -1);
           }
-        }, t.time)
+        }, t.time);
       });
       max = existingUser.time / 1000;
     }
@@ -78,8 +85,8 @@ function startTimer() {
       submit.textContent = `🕒 0:0${diff.padStart(6, '0')}`;
       if (diff > max) {
         reset();
-        heading.textContent = "Better luck next time!";
-        message.textContent = "That was 2slow!";
+        heading.textContent = 'Better luck next time!';
+        message.textContent = 'Just a little bit 2slow';
       }
     }, 10);
   }
@@ -103,19 +110,19 @@ password.addEventListener('focus', () => {
     remember.disabled = true;
     submit.style.fontSize = '2em';
     submit.textContent = '🔴 ⚪ ⚪';
-    message.textContent = "";
-    heading.textContent = "3…"
+    message.textContent = '';
+    heading.textContent = '3…';
     setTimeout(() => {
       submit.textContent = '🔴 🔴 ⚪';
-      heading.textContent = "2…";
+      heading.textContent = '2…';
     }, 1.5e3);
     setTimeout(() => {
       submit.textContent = '🔴 🔴 🔴';
-      heading.textContent = "1…";
+      heading.textContent = '1…';
     }, 3e3);
     setTimeout(() => {
       submit.textContent = '🟢 🟢 🟢';
-      heading.textContent = "Go!";
+      heading.textContent = 'Go!';
       setTimeout(startTimer, 200);
     }, 4.5e3);
   }
@@ -150,40 +157,54 @@ form.addEventListener('submit', (event) => {
     }
     if (time < password.length * 100) {
       reset();
-      message.textContent = "2fast! Take your time, Speed Racer.";
+      message.textContent = '2fast! Try again.';
       return;
     }
-    localStorage.setItem(email, JSON.stringify({
-      password,
-      passwordTimes,
-      time
-    }));
+    localStorage.setItem(
+      email,
+      JSON.stringify({
+        password,
+        passwordTimes,
+        time,
+      })
+    );
+    if (remember.value) localStorage.setItem('lastLogin', email);
     toggleView();
     reset();
     requestAnimationFrame(() => {
-      congratsMessage.textContent = `Your new personal best is ${(time / 1000).toFixed(3)} seconds!`;
-      heading.textContent = "A new record!";
-      helpText.textContent = "Don't forget 2practice before next time.";
+      congratsMessage.textContent = `Your new personal best is ${(
+        time / 1000
+      ).toFixed(3)} seconds!`;
+      heading.textContent = 'A new record!';
+      helpText.textContent = 'Remember 2practice…';
     });
-    
   } else {
-    localStorage.setItem(email, JSON.stringify({
-      password,
-      passwordTimes,
-      time
-    }));
+    localStorage.setItem(
+      email,
+      JSON.stringify({
+        password,
+        passwordTimes,
+        time,
+      })
+    );
+    if (remember.value) localStorage.setItem('lastLogin', email);
     toggleView();
     reset();
     requestAnimationFrame(() => {
-      congratsMessage.textContent = `Your new personal best is ${(time / 1000).toFixed(3)} seconds!`;
+      congratsMessage.textContent = `Your new personal best is ${(
+        time / 1000
+      ).toFixed(3)} seconds!`;
       heading.textContent = `Weclome ${email}!`;
-      helpText.textContent = "Not 2bad for a new guy.";
+      helpText.textContent = 'Not 2bad…';
     });
-    
   }
-
 });
 
-logout.addEventListener('click', (event) => {
+logout.addEventListener('click', () => {
   toggleView();
+});
+
+clearData.addEventListener('click', () => {
+  localStorage.clear();
+  reset();
 });
