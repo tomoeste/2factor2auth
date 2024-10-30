@@ -140,6 +140,10 @@ password.addEventListener('keydown', (event) => {
   }
 });
 
+password.addEventListener('paste', (event) => {
+  event.preventDefault();
+});
+
 form.addEventListener('submit', (event) => {
   event.preventDefault(); // Prevent default form submission
 
