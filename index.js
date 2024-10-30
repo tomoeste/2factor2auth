@@ -119,14 +119,23 @@ password.addEventListener('focus', () => {
     setTimeout(() => {
       submit.textContent = '🔴 🔴 🔴';
       heading.textContent = '1…';
+      setTimeout(() => {
+        heading.textContent = 'Ready…';
+      }, 1.5e3)
     }, 3e3);
     setTimeout(() => {
       submit.textContent = '🟢 🟢 🟢';
       heading.textContent = 'Go!';
-      setTimeout(startTimer, 200);
-    }, 4.5e3);
+      setTimeout(() => {
+        startTimer();
+      }, 200);
+    }, 4.5e3 + randomIntFromInterval(200, 3000));
   }
 });
+
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 password.addEventListener('keydown', (event) => {
   const key = event.key;
